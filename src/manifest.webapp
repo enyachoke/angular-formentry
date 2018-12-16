@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "name": "angular-formentry",
+  "description": "Allows for data entry using formentry module developed by ampath forms are created using a different app",
+  "launch_path": "index.html",
+  "icons": {
+    "48": "/assets/pwa-192x192.png"
+  },
+  "developer": {
+    "name": "enyachoke",
+    "url": "https://github.com/enyachoke/angular-formentry"
+  },
+  "default_locale": "en",
+  "activities": {
+    "openmrs": {
+      "href": "*"
+    }
+  }
+}

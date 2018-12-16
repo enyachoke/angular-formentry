@@ -1,0 +1,22 @@
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Encounter Type</th>
+      <th>Version</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let form of forms; let i = index">
+      <td>{{form.name}}</td>
+      <td>{{ form.encounterType?.name}}</td>
+      <td>{{ form.version}}</td>
+      <th>
+        <button (click)="formSelected(form)" class="btn btn-primary btn-xs">
+          <fa-icon [icon]="['fas', 'plus']"></fa-icon>
+        </button>
+      </th>
+    </tr>
+  </tbody>
+</table>

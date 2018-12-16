@@ -1,0 +1,96 @@
+
+import {take} from 'rxjs/operators';
+
+import {map} from 'rxjs/operators';
+import { Injectable } from '@angular/core';
+import { Observable , ReplaySubject } from 'rxjs';
+import { PersonResourceService } from './person-resource.service';
+import * as _ from 'lodash';
+import { HttpParams, HttpClient } from '@angular/common/http';
+import { AppsettingService } from './app-settings.service';
+
+@Injectable()
+export class ProviderResourceService {
+
+  public v: string = 'full';
+
+  constructor(protected http: HttpClient,
+              protected personService: PersonResourceService,
+              private appsettingService: AppsettingService) {
+  }
+
+  public getUrl(): string {
+
+    return this.appsettingService.getRestBaseUrl()  + 'provider';
+  }
+
+  public searchProvider(searchText: string, cached: boolean = false, v: string = null):
+  Observable<any> {
+
+    let url = this.getUrl() ;
+    let params: HttpParams = new HttpParams()
+    .set('q', searchText)
+    .set('v', (v && v.length > 0) ? v : this.v);
+
+    return this.http.get<any>(url, {
+      params: params
+    }).pipe(
+      map((response) => {
+        return response.results;
+      }));
+  }
+
+  public getProviderByUuid(uuid: string, cached: boolean = false, v: string = null):
+  Observable<any> {
+
+    let url = this.getUrl();
+    url += '/' + uuid;
+
+    let params: HttpParams = new HttpParams()
+    .set('v', (v && v.length > 0) ? v : this.v);
+    return this.http.get(url, {
+      params: params
+    });
+  }
+  public getProviderByPersonUuid(uuid, v?) {
+    let providerResults = new ReplaySubject(1);
+    this.personService.getPersonByUuid(uuid, false).pipe(take(1)).subscribe(
+      (result) => {
+        if (result) {
+          let response = this.searchProvider(result.display, false, v);
+
+          response.pipe(take(1)).subscribe(
+            (providers) => {
+              let foundProvider;
+              _.each(providers, (provider: any) => {
+                if (provider.person && provider.person.uuid === uuid) {
+                  foundProvider = provider;
+                }
+              });
+              if (foundProvider) {
+                if (foundProvider.display === '') {
+                  foundProvider.display = foundProvider.person.display;
+                }
+                providerResults.next(foundProvider);
+              } else {
+                let msg = 'Error processing request: No provider with given person uuid found';
+                providerResults.error(msg);
+              }
+
+            },
+            (error) => {
+              let msg = 'Error processing request: No person with given uuid found';
+              providerResults.error(msg);
+            }
+          );
+
+        }
+
+      },
+      (error) => {
+        providerResults.error(error);
+      }
+    );
+    return providerResults;
+    }
+}

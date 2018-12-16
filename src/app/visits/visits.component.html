@@ -1,0 +1,62 @@
+<div class="col-md-12">
+    <button (click)='startVisit()' class='btn btn-primary'>Start Visit</button>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Visit Type</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Location</th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let visit of visits; let i = index">
+                <td>{{visit.visitType.name}}</td>
+                <td>{{ visit.startDatetime | date }}</td>
+                <td>{{ visit.stopDatetime | date}}</td>
+                <td>{{ visit.location?.display}}</td>
+                <td><button (click)="loadVisit(visit)" class="btn btn-primary btn-xs">
+                        <fa-icon [icon]="['fas', 'edit']"></fa-icon>
+                    </button>
+                </td>
+                <td>
+                    <span class="label label-success" *ngIf="isActiveVisit(visit.uuid)">Active</span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Start Visit</h4>
+    </div>
+    <div class="modal-body">
+        <fieldset>
+            <div class="form-group">
+                <input [(ngModel)]="model.startDatetime" [owlDateTime]="dt1" [owlDateTimeTrigger]="dt1" class="form-control"
+                    placeholder="Start Date" name="startDatetime" type="text">
+                <owl-date-time [pickerMode]='dialog' #dt1></owl-date-time>
+            </div>
+            <div class="form-group">
+                <input class="form-control" [owlDateTime]="dt2" [owlDateTimeTrigger]="dt2" [(ngModel)]="model.stopDatetime"
+                    placeholder="End Date" name="stopDatetime" type="text" value="">
+                <owl-date-time [pickerMode]='dialog' #dt2></owl-date-time>
+            </div>
+            <div class="form-group">
+                <ng-select [items]="locations$ | async" bindLabel="name" bindValue="uuid" placeholder="Select Visit Location"
+                    [hideSelected]="true" [loading]="locationsLoading" name="location" [typeahead]="locationsInput$"
+                    [(ngModel)]="model.location">
+                </ng-select>
+            </div>
+            <ng-select [(ngModel)]="model.visitType" name="visitType" placeholder="Select Visit Type" [items]="visitTypes"
+                bindValue="uuid" bindLabel="display">
+            </ng-select>
+        </fieldset>
+    </div>
+    <div class='modal-footer'>
+        <button class="btn btn-primary" (click)="saveVisit()">Save</button>
+        <button class="btn" (click)="modalRef.hide()">Cancel</button>
+    </div>
+</ng-template>

@@ -1,0 +1,35 @@
+<div *ngIf="currentPatient" class="col-md-12">
+    <table class='table'>
+        <tr>
+            <td><strong>Name:</strong> {{currentPatient.person.display}}</td>
+            <td><strong>Age:</strong> {{currentPatient.person.age}}</td>
+        </tr>
+        <tr>
+            <td><strong>Identifers:</strong> {{currentPatient.identifiers | identifiers}}</td>
+            <td></td>
+        </tr>
+    </table>
+    <div class="col-md-12">
+        <fieldset class="the-fieldset">
+            <legend class="the-legend">Current Visit</legend>
+            <div class="list-group-item" *ngIf="currentVisit">
+                <div class="px-nested-panel-heading clearfix">
+                    {{currentVisit.visitType?.name}} Started at: <strong>{{currentVisit.startDatetime | date: 'hh:mm:ss
+                        a, MMM, dd yyyy'}}
+                    </strong>
+                    <span *ngIf="stopDatetime">
+                        Ended at: <strong>{{currentVisit.stopDatetime | date: 'hh:mm:ss a MMM, dd yyyy'}}</strong>
+                    </span>
+                    <span>at: <strong>{{currentVisit.location?.display}}</strong></span>
+                </div>
+            </div>
+        </fieldset>
+        <nav mat-tab-nav-bar mat-align-tabs="start">
+            <a style="text-decoration: none" mat-tab-link *ngFor="let link of navLinks" [routerLink]="link.path"
+                routerLinkActive #rla="routerLinkActive" [active]="rla.isActive">
+                {{link.label}}
+            </a>
+        </nav>
+    </div>
+    <router-outlet></router-outlet>
+</div>

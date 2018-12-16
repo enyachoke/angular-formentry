@@ -1,0 +1,78 @@
+<div class="form-entry">
+
+  <div *ngIf=form>
+    <error-renderer [form]="form"></error-renderer>
+    <form [formGroup]="form.rootNode.control">
+      <h4 class="component-title"><span class="fa fa-file"></span>{{formName}}</h4>
+      <form-renderer [node]="form.rootNode"></form-renderer>
+      <div class="form-row">
+        <button id="formentry-submit-btn" *ngIf="!formSubmissionErrors" class="btn btn-primary" (click)="onSubmit($event)">Save</button>
+        <button class="btn btn-danger" (click)="onCancel($event)">Cancel</button>
+      </div>
+    </form>
+  </div>
+  <br /> &nbsp;
+  <div *ngIf="formSubmissionErrors" class="panel panel-danger" style="margin:2px">
+    <div class="panel-heading">
+      <h5>
+        <strong class="text-danger">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle-thin fa-stack-2x"></i>
+            <i class="fa fa-info fa-stack-1x"></i>
+          </span>
+          The following error(s) occured while submitting form, please review form and retry saving!
+        </strong>
+      </h5>
+    </div>
+    <div class="panel-body">
+      <ul class="list-group">
+        <li *ngFor="let formError of formSubmissionErrors" class="list-group-item text-danger">{{formError}}</li>
+      </ul>
+    </div>
+    <div class="panel-footer" style="min-height: 50px">
+      <button id="formentry-submit-btn" *ngIf="formSubmissionErrors" (click)="retrySubmittingPayload()" class="btn btn-primary pull-right">Retry
+        Saving Form</button>
+    </div>
+  </div>
+  <div *ngIf="this.form && !this.form.valid && this.form.showErrors" class="panel panel-danger" style="margin:2px">
+    <div class="panel-heading">
+      <h5>
+        <strong class="text-danger">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle-thin fa-stack-2x"></i>
+            <i class="fa fa-info fa-stack-1x"></i>
+          </span>
+          The form has some validation errors. Scroll to the top of the form to see error list.
+        </strong>
+      </h5>
+    </div>
+  </div>
+  <br /> &nbsp;
+  <div *ngIf="formRenderingErrors.length>0" class="panel panel-danger" style="margin:2px">
+    <div class="panel-heading">
+      <h5>
+        <strong class="text-danger">
+          <span class="fa-stack fa-lg">
+            <i class="fa fa-circle-thin fa-stack-2x"></i>
+            <i class="fa fa-info fa-stack-1x"></i>
+          </span>
+          The following error(s) occured while rendering form, please report this error!
+        </strong>
+      </h5>
+    </div>
+    <div class="panel-body">
+      <ul class="list-group">
+        <li *ngFor="let formError of formRenderingErrors" class="list-group-item text-danger">{{formError}}</li>
+      </ul>
+    </div>
+    <div class="panel-footer" style="min-height: 50px">
+      <button (click)="loadForm()" class="btn btn-primary pull-right">Retry Loading Form</button>
+    </div>
+  </div>
+
+  <swal #successSwal title="Success" text="Encounter Saved" type="success" (confirm)="confirmSaved()">
+  </swal>
+
+  <swal #errorSwal title="Oops..." text="That was not supposed to happen" type="error">
+  </swal>
+</div>
